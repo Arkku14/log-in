@@ -181,7 +181,6 @@
       const email = emailInput.value.trim();
       const errorMsg = document.getElementById('error-message');
 
-      // Piilota virheilmoitus ja poista virhetyyli
       errorMsg.style.display = 'none';
       emailInput.classList.remove('error');
 
@@ -191,37 +190,36 @@
         return;
       }
 
-      // Näytä salasana-vaihe
       document.getElementById('email-step').classList.add('hidden');
       document.getElementById('password-step').classList.remove('hidden');
       document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
       document.getElementById('email-display').textContent = email;
     }
 
-    document.getElementById('login-form').addEventListener('submit', function (e) {
-      e.preventDefault();
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      const emailStepVisible = !document.getElementById('email-step').classList.contains('hidden');
 
-      const passwordInput = document.getElementById('password');
-      const password = passwordInput.value.trim();
-      const confirmation = document.getElementById('confirmation-message');
+      if (emailStepVisible) {
+        // Jos ollaan vielä sähköpostivaiheessa, estä lomakkeen lähetys ja kutsu goToPassword
+        e.preventDefault();
+        goToPassword();
+      } else {
+        // Salasana-vaihe: käsittele kirjautuminen
+        e.preventDefault();
+        const passwordInput = document.getElementById('password');
+        const password = passwordInput.value.trim();
+        const confirmation = document.getElementById('confirmation-message');
 
-      if (password === '') {
-        alert('Syötä salasana');
-        passwordInput.focus();
-        return;
+        if (password === '') {
+          alert('Syötä salasana');
+          passwordInput.focus();
+          return;
+        }
+
+        confirmation.style.display = 'block';
       }
-
-      // Näytä varmenneviesti ja piilota virhe (jos oli)
-      confirmation.style.display = 'block';
-
-      // Halutessa voit piilottaa lomakkeen tai tyhjentää kentät tässä
-      // Esim: this.reset();
-
-      // Voit halutessasi poistaa salasana-vaiheen näkymästä:
-      // document.getElementById('password-step').classList.add('hidden');
     });
 
-    // Kun käyttäjä kirjoittaa sähköpostikenttään, piilotetaan virheilmoitus ja poistetaan punainen reunus
     document.getElementById('email').addEventListener('input', function () {
       document.getElementById('error-message').style.display = 'none';
       this.classList.remove('error');
