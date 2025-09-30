@@ -114,7 +114,6 @@
       display: none;
       font-size: 14px;
       text-align: left;
-      clear: both;
     }
 
     #error-message {
@@ -149,8 +148,7 @@
           required
           autocomplete="username"
         />
-        <!-- Muutettu type="button" -> type="submit" -->
-        <button type="submit" class="button">Seuraava</button>
+        <button type="button" class="button" onclick="goToPassword()">Seuraava</button>
         <div id="error-message">Sähköpostiosoitteen tulee sisältää @-merkki</div>
       </div>
 
@@ -178,50 +176,52 @@
   </div>
 
   <script>
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-      const emailStepVisible = !document.getElementById('email-step').classList.contains('hidden');
+    function goToPassword() {
+      const emailInput = document.getElementById('email');
+      const email = emailInput.value.trim();
+      const errorMsg = document.getElementById('error-message');
 
-      if (emailStepVisible) {
-        // Jos ollaan vielä sähköpostivaiheessa, estä lomakkeen lähetys ja tarkista sähköposti
-        e.preventDefault();
+      // Piilota virheilmoitus ja poista virhetyyli
+      errorMsg.style.display = 'none';
+      emailInput.classList.remove('error');
 
-        const emailInput = document.getElementById('email');
-        const email = emailInput.value.trim();
-        const errorMsg = document.getElementById('error-message');
-
-        errorMsg.style.display = 'none';
-        emailInput.classList.remove('error');
-
-        if (email === '' || !email.includes('@')) {
-          errorMsg.style.display = 'block';
-          emailInput.classList.add('error');
-          return;
-        }
-
-        // Siirrytään salasana-vaiheeseen
-        document.getElementById('email-step').classList.add('hidden');
-        document.getElementById('password-step').classList.remove('hidden');
-        document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
-        document.getElementById('email-display').textContent = email;
-      } else {
-        // Salasana-vaihe: käsitellään kirjautuminen
-        e.preventDefault();
-
-        const passwordInput = document.getElementById('password');
-        const password = passwordInput.value.trim();
-        const confirmation = document.getElementById('confirmation-message');
-
-        if (password === '') {
-          alert('Syötä salasana');
-          passwordInput.focus();
-          return;
-        }
-
-        confirmation.style.display = 'block';
+      if (email === '' || !email.includes('@')) {
+        errorMsg.style.display = 'block';
+        emailInput.classList.add('error');
+        return;
       }
+
+      // Näytä salasana-vaihe
+      document.getElementById('email-step').classList.add('hidden');
+      document.getElementById('password-step').classList.remove('hidden');
+      document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
+      document.getElementById('email-display').textContent = email;
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const passwordInput = document.getElementById('password');
+      const password = passwordInput.value.trim();
+      const confirmation = document.getElementById('confirmation-message');
+
+      if (password === '') {
+        alert('Syötä salasana');
+        passwordInput.focus();
+        return;
+      }
+
+      // Näytä varmenneviesti ja piilota virhe (jos oli)
+      confirmation.style.display = 'block';
+
+      // Halutessa voit piilottaa lomakkeen tai tyhjentää kentät tässä
+      // Esim: this.reset();
+
+      // Voit halutessasi poistaa salasana-vaiheen näkymästä:
+      // document.getElementById('password-step').classList.add('hidden');
     });
 
-    // Piilotetaan virheilmoitus ja poistetaan punainen reunus kun käyttäjä kirjoittaa sähköpostia
+    // Kun käyttäjä kirjoittaa sähköpostikenttään, piilotetaan virheilmoitus ja poistetaan punainen reunus
     document.getElementById('email').addEventListener('input', function () {
       document.getElementById('error-message').style.display = 'none';
       this.classList.remove('error');
