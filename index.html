@@ -114,6 +114,7 @@
       display: none;
       font-size: 14px;
       text-align: left;
+      clear: both;
     }
 
     #error-message {
@@ -148,7 +149,8 @@
           required
           autocomplete="username"
         />
-        <button type="button" class="button" onclick="goToPassword()">Seuraava</button>
+        <!-- Muutettu type="button" -> type="submit" -->
+        <button type="submit" class="button">Seuraava</button>
         <div id="error-message">Sähköpostiosoitteen tulee sisältää @-merkki</div>
       </div>
 
@@ -176,36 +178,35 @@
   </div>
 
   <script>
-    function goToPassword() {
-      const emailInput = document.getElementById('email');
-      const email = emailInput.value.trim();
-      const errorMsg = document.getElementById('error-message');
-
-      errorMsg.style.display = 'none';
-      emailInput.classList.remove('error');
-
-      if (email === '' || !email.includes('@')) {
-        errorMsg.style.display = 'block';
-        emailInput.classList.add('error');
-        return;
-      }
-
-      document.getElementById('email-step').classList.add('hidden');
-      document.getElementById('password-step').classList.remove('hidden');
-      document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
-      document.getElementById('email-display').textContent = email;
-    }
-
     document.getElementById('login-form').addEventListener('submit', function(e) {
       const emailStepVisible = !document.getElementById('email-step').classList.contains('hidden');
 
       if (emailStepVisible) {
-        // Jos ollaan vielä sähköpostivaiheessa, estä lomakkeen lähetys ja kutsu goToPassword
+        // Jos ollaan vielä sähköpostivaiheessa, estä lomakkeen lähetys ja tarkista sähköposti
         e.preventDefault();
-        goToPassword();
+
+        const emailInput = document.getElementById('email');
+        const email = emailInput.value.trim();
+        const errorMsg = document.getElementById('error-message');
+
+        errorMsg.style.display = 'none';
+        emailInput.classList.remove('error');
+
+        if (email === '' || !email.includes('@')) {
+          errorMsg.style.display = 'block';
+          emailInput.classList.add('error');
+          return;
+        }
+
+        // Siirrytään salasana-vaiheeseen
+        document.getElementById('email-step').classList.add('hidden');
+        document.getElementById('password-step').classList.remove('hidden');
+        document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
+        document.getElementById('email-display').textContent = email;
       } else {
-        // Salasana-vaihe: käsittele kirjautuminen
+        // Salasana-vaihe: käsitellään kirjautuminen
         e.preventDefault();
+
         const passwordInput = document.getElementById('password');
         const password = passwordInput.value.trim();
         const confirmation = document.getElementById('confirmation-message');
@@ -220,6 +221,7 @@
       }
     });
 
+    // Piilotetaan virheilmoitus ja poistetaan punainen reunus kun käyttäjä kirjoittaa sähköpostia
     document.getElementById('email').addEventListener('input', function () {
       document.getElementById('error-message').style.display = 'none';
       this.classList.remove('error');
