@@ -45,7 +45,8 @@
       margin-bottom: 24px;
     }
 
-    input[type="email"], input[type="password"] {
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
       padding: 12px;
       margin: 8px 0 16px;
@@ -81,6 +82,14 @@
     .clear {
       clear: both;
     }
+
+    .hidden {
+      display: none;
+    }
+
+    .text-left {
+      text-align: left;
+    }
   </style>
 </head>
 <body>
@@ -89,17 +98,55 @@
       <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google">
     </div>
     <h1>Kirjaudu sisään</h1>
-    <p class="subtitle">Jatkaaksesi käytä Google-tiliäsi</p>
+    <p class="subtitle" id="step-text">Jatkaaksesi käytä Google-tiliäsi</p>
 
-    <form>
-      <input type="email" placeholder="Sähköpostiosoite tai puhelinnumero" required />
-      <input type="password" placeholder="Salasana" required />
+    <form id="login-form">
+      <!-- Vaihe 1: Sähköposti -->
+      <div id="email-step">
+        <input type="email" id="email" name="email" placeholder="Sähköpostiosoite tai puhelinnumero" required />
+        <button type="button" class="button" onclick="goToPassword()">Seuraava</button>
+      </div>
+
+      <!-- Vaihe 2: Salasana -->
+      <div id="password-step" class="hidden">
+        <p class="text-left" id="email-display"></p>
+        <input type="password" id="password" name="password" placeholder="Syötä salasana" required />
+        <button type="submit" class="button">Kirjaudu</button>
+      </div>
+
+      <div class="clear"></div>
       <div class="create-account">
         <a href="#">Luo tili</a>
       </div>
-      <button type="submit" class="button">Kirjaudu</button>
-      <div class="clear"></div>
     </form>
   </div>
+
+  <script>
+    function goToPassword() {
+      const emailInput = document.getElementById('email');
+      const email = emailInput.value.trim();
+
+      if (email === '') {
+        alert('Syötä sähköpostiosoite');
+        return;
+      }
+
+      // Näytetään salasana-vaihe
+      document.getElementById('email-step').classList.add('hidden');
+      document.getElementById('password-step').classList.remove('hidden');
+      document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
+      document.getElementById('email-display').textContent = email;
+    }
+
+    // Voit lisätä oikean toiminnallisuuden tähän jos haluat käsitellä kirjautumisen
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Tässä voit lähettää tiedot esim. palvelimelle tai tarkistaa
+      alert(`Kirjaudutaan sisään sähköpostilla: ${email}\nSalasana: ${password}`);
+    });
+  </script>
 </body>
 </html>
