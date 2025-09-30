@@ -23,6 +23,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       border-radius: 8px;
       text-align: center;
+      position: relative;
     }
 
     .logo {
@@ -93,16 +94,25 @@
 
     #confirmation-message {
       margin-top: 20px;
-      color: green;
-      font-weight: bold;
+      padding: 10px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
       display: none;
+      font-size: 14px;
     }
 
     #error-message {
-      color: red;
       margin-top: 10px;
+      padding: 10px;
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
       font-size: 14px;
       display: none;
+      text-align: left;
     }
   </style>
 </head>
@@ -119,7 +129,7 @@
       <div id="email-step">
         <input type="email" id="email" name="email" placeholder="Sähköpostiosoite tai puhelinnumero" required />
         <button type="button" class="button" onclick="goToPassword()">Seuraava</button>
-        <p id="error-message">Sähköpostin tulee sisältää @-merkki</p>
+        <div id="error-message">Sähköpostiosoitteen tulee sisältää @-merkki</div>
       </div>
 
       <!-- Vaihe 2: Salasana -->
@@ -135,8 +145,8 @@
       </div>
     </form>
 
-    <!-- ✅ Varmenneviesti -->
-    <p id="confirmation-message">Varmenne onnistui</p>
+    <!-- ✅ Varmenne onnistui -viesti -->
+    <div id="confirmation-message">Varmenne onnistui</div>
   </div>
 
   <script>
@@ -145,15 +155,16 @@
       const email = emailInput.value.trim();
       const errorMsg = document.getElementById('error-message');
 
-      // Piilotetaan mahdollinen aiempi virheilmoitus
+      // Piilota vanha virhe
       errorMsg.style.display = 'none';
 
+      // Tarkistus
       if (email === '' || !email.includes('@')) {
         errorMsg.style.display = 'block';
         return;
       }
 
-      // Näytetään salasana-vaihe
+      // Näytä salasana-vaihe
       document.getElementById('email-step').classList.add('hidden');
       document.getElementById('password-step').classList.remove('hidden');
       document.getElementById('step-text').textContent = 'Tervetuloa takaisin';
@@ -164,18 +175,18 @@
       e.preventDefault();
 
       const password = document.getElementById('password').value;
+      const confirmation = document.getElementById('confirmation-message');
 
       if (password.trim() === '') {
         alert('Syötä salasana');
         return;
       }
 
-      // Näytetään varmenneviesti
-      const confirmation = document.getElementById('confirmation-message');
+      // Näytä varmenneviesti
       confirmation.style.display = 'block';
     });
 
-    // Piilota virheilmoitus automaattisesti, jos käyttäjä alkaa kirjoittaa uutta sähköpostia
+    // Piilota virheilmoitus kun kirjoitetaan
     document.getElementById('email').addEventListener('input', function () {
       document.getElementById('error-message').style.display = 'none';
     });
